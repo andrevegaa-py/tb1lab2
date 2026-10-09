@@ -140,6 +140,15 @@
 
       // Creamos el objeto exactamente con los nombres de columna de Supabase
       const nuevoPedido = {
+        id: "P-" + Math.floor(Math.random() * 100000),
+        cliente: cliente,
+        producto: producto,
+        precio_total: precioTotal,
+        adelanto: montoAdelantado,
+        fecha_pedido_proveedor: fechaProv,
+        plazo_estimado_dias: plazo
+        // 'fecha_pedido' y 'estado' se ponen solos en Supabase por los valores default
+      };
         cliente: cliente,
         producto: producto,
         precio_total: precioTotal,
