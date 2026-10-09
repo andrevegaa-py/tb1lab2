@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registrar pedido</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="phone">
+    <main class="content">
+      <h1 class="title">Registrar pedido</h1>
+
+      <form class="form">
+        <div class="field">
+          <label for="cliente">Nombre del cliente</label>
+          <input type="text" id="cliente" placeholder="Ej. Carlos Mendoza" />
+        </div>
+
+        <div class="field">
+          <label for="producto">Producto</label>
+          <input type="text" id="producto" placeholder="Ej. Audífonos Bluetooth Pro" />
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label for="precio">Precio total</label>
+            <input type="text" id="precio" placeholder="$0.00" />
+          </div>
+          <div class="field">
+            <label for="adelanto">Monto adelantado</label>
+            <input type="text" id="adelanto" placeholder="$0.00" />
+          </div>
+        </div>
+
+        <div class="saldo-box">
+          <span class="saldo-label">Saldo pendiente</span>
+          <span class="saldo-monto">$0.00</span>
+        </div>
+
+        <div class="field">
+          <label for="fecha">Fecha del pedido</label>
+          <input type="date" id="fecha" />
+        </div>
+
+        <div class="field">
+          <label for="proveedor">Proveedor</label>
+          <select id="proveedor">
+            <option>Shenzhen Dropship Ltd.</option>
+            <option>AliExpress</option>
+            <option>1688.com</option>
+            <option>DHgate</option>
+            <option>Temu</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn-primary">Guardar pedido</button>
+      </form>
+    </main>
+
+    <nav class="tabbar">
+      <a href="registrar-pedido.html" class="tab active">
+        <span class="icon">＋</span>
+        <span>Registrar</span>
+      </a>
+      <a href="mis-pedidos.html" class="tab">
+        <span class="icon">≡</span>
+        <span>Mis Pedidos</span>
+      </a>
+      <a href="detalle-de-pedido.html" class="tab">
+        <span class="icon">▤</span>
+        <span>Detalle</span>
+      </a>
+      <a href="estado-de-mi-pedido.html" class="tab">
+        <span class="icon">◎</span>
+        <span>Estado</span>
+      </a>
+    </nav>
+  </div>
+
+  <script src="reglas.js"></script>
+  <script>
+    const form = document.querySelector(".form");
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const cliente = document.getElementById("cliente").value.trim();
+      const producto = document.getElementById("producto").value.trim();
+      const precioTotal = parseFloat(document.getElementById("precio").value);
+      const montoAdelantado = parseFloat(document.getElementById("adelanto").value);
+      const fechaPedido = document.getElementById("fecha").value;
+      const proveedor = document.getElementById("proveedor").value;
+
+      if (!cliente || !producto || isNaN(precioTotal) || isNaN(montoAdelantado) || !fechaPedido) {
+        alert("Completa todos los campos antes de guardar.");
+        return;
+      }
+
+      agregarPedido({
+        cliente,
+        producto,
+        precioTotal,
+        montoAdelantado,
+        fechaPedido,
+        proveedor,
+        estadoActual: "En proceso",
+        pagado: false,
+      });
+
+      alert("Pedido guardado. Puedes verlo en 'Mis Pedidos'.");
+      form.reset();
+    });
+  </script>
+</body>
+</html>

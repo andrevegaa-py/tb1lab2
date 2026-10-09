@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Detalle de pedido</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="phone">
+    <main class="content" id="contenido-detalle">
+      <a href="mis-pedidos.html" class="back-link">&larr; Mis pedidos</a>
+      <p style="color:#64748B; font-size:14px;">Selecciona un pedido desde "Mis Pedidos" para ver su detalle.</p>
+    </main>
+
+    <nav class="tabbar">
+      <a href="registrar-pedido.html" class="tab">
+        <span class="icon">＋</span>
+        <span>Registrar</span>
+      </a>
+      <a href="mis-pedidos.html" class="tab">
+        <span class="icon">≡</span>
+        <span>Mis Pedidos</span>
+      </a>
+      <a href="detalle-de-pedido.html" class="tab active">
+        <span class="icon">▤</span>
+        <span>Detalle</span>
+      </a>
+      <a href="estado-de-mi-pedido.html" class="tab">
+        <span class="icon">◎</span>
+        <span>Estado</span>
+      </a>
+    </nav>
+  </div>
+
+  <script src="reglas.js"></script>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+    const contenido = document.getElementById("contenido-detalle");
+
+    if (id) {
+      const pedido = obtenerPedidoPorId(id);
+
+      if (pedido) {
+        contenido.innerHTML = `
+          <a href="mis-pedidos.html" class="back-link">&larr; Mis pedidos</a>
+          <h1 class="title">Detalle de pedido</h1>
+
+          <div class="card">
+            <div class="row-info">
+              <span class="label-muted">Cliente</span>
+              <span class="value">${pedido.cliente}</span>
+            </div>
+            <div class="row-info">
+              <span class="label-muted">Producto</span>
+              <span class="value">${pedido.producto}</span>
+            </div>
+            <div class="row-info">
+              <span class="label-muted">Proveedor</span>
+              <span class="value">${pedido.proveedor}</span>
+            </div>
+            <div class="row-info">
+              <span class="label-muted">Fecha del pedido</span>
+              <span class="value">${pedido.fechaPedido || "sin fecha"}</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2 class="card-title">Resumen financiero</h2>
+            <div class="row-info">
+              <span class="label-muted">Precio total</span>
+              <span class="value">$${pedido.precioTotal.toFixed(2)}</span>
+            </div>
+            <div class="row-info">
+              <span class="label-muted">Monto adelantado</span>
+              <span class="value">$${pedido.montoAdelantado.toFixed(2)}</span>
+            </div>
+            <div class="saldo-box">
+              <span class="saldo-label">Saldo pendiente</span>
+              <span id="saldo-pendiente" class="saldo-monto">calculando...</span>
+            </div>
+          </div>
+
+          <button id="btn-pagado" type="button" class="btn-primary">
+            ${pedido.pagado ? "Pagado ✓" : "Marcar como pagado"}
+          </button>
+        `;
+
+        function actualizarSaldo(pedidoActual) {
+          const saldo = calcularSaldoPendiente(
+            pedidoActual.precioTotal,
+            pedidoActual.montoAdelantado,
+            pedidoActual.pagado
+          );
+          const el = document.getElementById("saldo-pendiente");
+          el.textContent = saldo === null ? "Datos incompletos" : "$" + saldo.toFixed(2);
+        }
+
+        actualizarSaldo(pedido);
+
+        const btn = document.getElementById("btn-pagado");
+        if (pedido.pagado) {
+          btn.style.background = "#16A34A";
+        }
+        btn.addEventListener("click", () => {
+          const actualizado = actualizarPedido(pedido.id, { pagado: true });
+          actualizarSaldo(actualizado);
+          btn.textContent = "Pagado ✓";
+          btn.style.background = "#16A34A";
+        });
+      } else {
+        contenido.innerHTML = '<a href="mis-pedidos.html" class="back-link">&larr; Mis pedidos</a><p style="color:#64748B; font-size:14px;">No se encontró ese pedido.</p>';
+      }
+    }
+  </script>
+</body>
+</html>

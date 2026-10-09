@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Estado de mi pedido</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="phone">
+    <main class="content">
+      <h1 class="title" style="margin-bottom:16px;">Estado de mi pedido</h1>
+
+      <div class="hero">
+        <div class="hero-eyebrow">Estás siguiendo el envío de:</div>
+        <div class="hero-title" id="producto-nombre">Audífonos Bluetooth Pro</div>
+        <p class="hero-desc" id="hero-mensaje">Tu pedido está en camino.</p>
+      </div>
+
+      <div class="card">
+        <h2 class="seguimiento-title">Seguimiento</h2>
+        <div class="pasos" id="pasos"></div>
+      </div>
+    </main>
+
+    <nav class="tabbar">
+      <a href="registrar-pedido.html" class="tab">
+        <span class="icon">＋</span>
+        <span>Registrar</span>
+      </a>
+      <a href="mis-pedidos.html" class="tab">
+        <span class="icon">≡</span>
+        <span>Mis Pedidos</span>
+      </a>
+      <a href="detalle-de-pedido.html" class="tab">
+        <span class="icon">▤</span>
+        <span>Detalle</span>
+      </a>
+      <a href="estado-de-mi-pedido.html" class="tab active">
+        <span class="icon">◎</span>
+        <span>Estado</span>
+      </a>
+    </nav>
+  </div>
+
+  <script src="reglas.js"></script>
+  <script>
+    // Datos de ejemplo del pedido que el cliente está siguiendo
+    const pedidoCliente = {
+      producto: "Audífonos Bluetooth Pro",
+      proveedor: "1688.com",
+      fechaPedido: "2026-08-24",
+      estadoActual: "En tránsito", // En proceso | En tránsito | Listo para entrega
+    };
+
+    const hoy = new Date("2026-09-12");
+
+    const secuencia = [
+      { clave: "En proceso", titulo: "Pedido enviado al proveedor" },
+      { clave: "En tránsito", titulo: "En tránsito" },
+      { clave: "Listo para entrega", titulo: "Listo para entrega" },
+    ];
+
+    const indiceActual = secuencia.findIndex(
+      (s) => s.clave === pedidoCliente.estadoActual
+    );
+
+    const pasosDiv = document.getElementById("pasos");
+    secuencia.forEach((paso, i) => {
+      const div = document.createElement("div");
+      let clase = "paso";
+      if (i < indiceActual) clase += " completado";
+      if (i === indiceActual) clase += " completado actual";
+      div.className = clase;
+      div.innerHTML = `
+        <div class="paso-punto">${i < indiceActual || i === indiceActual ? "✓" : ""}</div>
+        <div>
+          <div class="paso-texto-titulo">${paso.titulo}</div>
+          ${i === indiceActual ? '<div class="paso-texto-sub">Estado actual</div>' : ""}
+        </div>
+      `;
+      pasosDiv.appendChild(div);
+    });
+
+    // Usamos la Regla 2 para decidir el mensaje del hero
+    const estadoDemora = calcularEstadoDemora(
+      pedidoCliente.fechaPedido,
+      pedidoCliente.proveedor,
+      pedidoCliente.estadoActual,
+      hoy
+    );
+
+    const hero = document.getElementById("hero-mensaje");
+    if (pedidoCliente.estadoActual === "Listo para entrega") {
+      hero.textContent = "¡Tu pedido ya está listo para entrega!";
+    } else if (estadoDemora === "Demorado") {
+      hero.textContent = "Tu pedido se está demorando más de lo esperado. Estamos consultando con el proveedor.";
+      document.querySelector(".hero").style.background = "#F97316";
+    } else {
+      hero.textContent = "Tu pedido está en camino, dentro del tiempo estimado.";
+    }
+  </script>
+</body>
+</html>
