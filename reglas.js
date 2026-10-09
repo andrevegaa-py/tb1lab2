@@ -3,7 +3,8 @@
 // =========================================================
 const supabaseUrl = 'https://ugjbpftefipenjmsjpsp.supabase.co';
 const supabaseKey = 'sb_publishable_qNrt9v8vQMhULMdh-7qmyw_3wn4Ylkq';
-const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+// Le cambiamos el nombre a clienteSupabase para que no choque
+const clienteSupabase = supabase.createClient(supabaseUrl, supabaseKey);
 
 
 // =========================================================
@@ -65,7 +66,7 @@ function calcularEstadoDemora(fechaPedidoProveedor, plazoEstimadoDias, estadoAct
  * Obtiene TODOS los pedidos desde Supabase 
  */
 async function obtenerPedidos() {
-  const { data, error } = await supabase
+  const { data, error } = await clienteSupabase
     .from('pedidos')
     .select('*')
     .order('id', { ascending: false }); // Ordenar del más nuevo al más viejo
@@ -79,10 +80,9 @@ async function obtenerPedidos() {
 
 /** 
  * Guarda un pedido nuevo en Supabase
- * 'pedido' debe ser un objeto: { cliente, producto, precio_total, adelanto, fecha_pedido_proveedor, plazo_estimado_dias }
  */
 async function agregarPedido(pedido) {
-  const { data, error } = await supabase
+  const { data, error } = await clienteSupabase
     .from('pedidos')
     .insert([pedido])
     .select();
@@ -99,7 +99,7 @@ async function agregarPedido(pedido) {
  * Busca un pedido por su ID en Supabase
  */
 async function obtenerPedidoPorId(id) {
-  const { data, error } = await supabase
+  const { data, error } = await clienteSupabase
     .from('pedidos')
     .select('*')
     .eq('id', id)
@@ -116,7 +116,7 @@ async function obtenerPedidoPorId(id) {
  * Actualiza campos de un pedido existente en Supabase 
  */
 async function actualizarPedido(id, cambios) {
-  const { data, error } = await supabase
+  const { data, error } = await clienteSupabase
     .from('pedidos')
     .update(cambios)
     .eq('id', id)
