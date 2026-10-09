@@ -1,3 +1,8 @@
+// 1. Configuración de Supabase
+const supabaseUrl = 'https://ugjbpftefipenjmsjpsp.supabase.co';
+const supabaseKey = 'sb_publishable_qNrt9v8vQMhULMdh-7qmyw_3wn4Ylkq';
+const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
 // reglas.js
 // Reglas de negocio del sistema de gestión de pedidos (importación/dropshipping)
 
